@@ -1,60 +1,68 @@
-# Prompts Log — Arbisoft AI-Focused Internship 2026
-
-Per the program's AI Coding Ground Rules: log every significant prompt you give an AI coding
-tool (Cursor / Claude Code / Windsurf / Claude.ai), what it produced, and what you changed if
-it was wrong.
-
-**Entry format:**
-
-```
-### [Date] — [Short title]
-**Tool:** Claude Code / Cursor / Windsurf / etc.
-**Prompt:**
-> the prompt you used
-
-**Result:** what the AI produced (1–2 lines)
-**Correction (if any):** what you fixed and why
-**Kept in repo at:** path/to/file (optional)
-```
-
----
 
 ## Week 1 — Frontend Fundamentals
 
-### Example entry — delete once you start logging real ones
-**Tool:** Cursor
+### June 24 — Install dependencies and verify setup
+**Tool:** Claude Code
 **Prompt:**
-> Scaffold a React + TypeScript SPA with Vite, react-router-dom with 3 routes (Home, About,
-> Contact), and a shared Layout component with nav.
+> Install dependencies in /frontend, then run npm run dev, npm run test, and npm run lint. Fix any errors that come up and tell me what you changed.
 
-**Result:** Generated App.tsx, Layout.tsx, three route components, and main.tsx wiring
-BrowserRouter.
-**Correction:** None — output used as-is.
-
----
-
-## Week 2 — Backend, REST, CRUD & ORM
+**Result:** Installed Node.js, resolved eslint-plugin-react-hooks version conflict, all tests passed, lint clean, dev server running.
+**Correction:** None.
+**Kept in repo at:** frontend/package.json
 
 ---
 
-## Week 3 — Auth, Authorization, API Tests & Integration
+### June 24 — Build a Todos app (replace Contact route)
+**Tool:** Claude Code
+**Prompt:**
+> Replace the Contact route with a Todos route. Build a TodoForm component with validation, a TodoList that renders TodoItems, and TodoItem with a checkbox and delete button. Lift state up to the Todos page and pass props down. Update the nav link from Contact to Todos.
+
+**Result:** Generated TodoForm.tsx, TodoItem.tsx, TodoList.tsx, Todos.tsx with full state management and working prop drilling.
+**Correction:** None.
+**Kept in repo at:** frontend/src/components/Todo*.tsx, frontend/src/routes/Todos.tsx
 
 ---
 
-## Week 4 — Agent Concepts: Skills, Hooks, Memory & Plugins
+### June 24 — Style the entire UI
+**Tool:** Claude Code
+**Prompt:**
+> Update index.css with a light off-white background, better typography, and generous spacing. Style nav links as buttons with hover states. Add form styling with borders, padding, and focus states for inputs and a teal button. Make todo items look like cards with shadows and spacing. Add strikethrough on completed items. Style error messages in red, add 0.2s transitions to interactive elements, center the "No todos yet" message in light gray, and add breathing room between nav and content.
+
+**Result:** Completely restyled index.css with cohesive color scheme, animations, and polish.
+**Correction:** None.
+**Kept in repo at:** frontend/src/index.css
 
 ---
 
-## Week 5 — MCP, Multi-Agent Orchestration & Tool Design / Project Scaffold
+### June 24 — Write tests for Todo components
+**Tool:** Claude Code
+**Prompt:**
+> Create TodoItem.test.tsx with 3 tests: renders title, checkbox calls toggleTodo with correct ID, delete calls deleteTodo with correct ID. Create TodoList.test.tsx with 2 tests: renders all todos, shows "No todos yet" when empty.
+
+**Result:** Both test files generated with Vitest + React Testing Library. All 8 tests passing (4 new + 4 existing).
+**Correction:** None.
+**Kept in repo at:** frontend/src/components/TodoItem.test.tsx, TodoList.test.tsx
 
 ---
 
-## Week 6 — Core Feature Development
+### June 24 — Update Home and About pages
+**Tool:** Claude Code
+**Prompt:**
+> Replace Home.tsx with a "Welcome to my Week 1 SPA" heading and 2–3 sentences explaining it's a React app showing routing, state management, and validation. Replace About.tsx with "About This Project" and explain what the todo app demonstrates.
+
+**Result:** Both routes now have meaningful project descriptions.
+**Correction:** None.
+**Kept in repo at:** frontend/src/routes/Home.tsx, About.tsx
 
 ---
 
-## Week 7 — Advanced AI Features & Polish
+### June 24 — Fix config split (Vitest vs Vite)
+**Tool:** Claude Code
+**Prompt:**
+> Remove the test property from vite.config.ts and move it into a separate vitest.config.ts file so the build doesn't error.
+
+**Result:** Created vitest.config.ts with test settings, cleaned up vite.config.ts. Build succeeded.
+**Correction:** None.
+**Kept in repo at:** frontend/vite.config.ts, vitest.config.ts
 
 ---
-
-## Week 8 — Finalization, Documentation & Final Presentation
