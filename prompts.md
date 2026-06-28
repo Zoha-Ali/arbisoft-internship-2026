@@ -66,3 +66,13 @@
 **Kept in repo at:** frontend/vite.config.ts, vitest.config.ts
 
 ---
+
+## Week 2
+
+### June 29 — FastAPI Backend Setup
+
+**Prompt:** Set up a FastAPI project with main.py, models.py, database.py, and requirements.txt with a /todos GET endpoint returning an empty list.
+
+**Result:** Working FastAPI backend with SQLAlchemy ORM, Pydantic validation, and SQLite database. Tested on localhost:8000/todos.
+
+**Changes:** Created backend/ folder with 4 files and deployed locally.
