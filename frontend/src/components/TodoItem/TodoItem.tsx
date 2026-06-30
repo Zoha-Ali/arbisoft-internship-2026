@@ -1,8 +1,5 @@
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import './TodoItem.css';
+import { Todo } from '../../types';
 
 interface Props {
   todo: Todo;
@@ -10,7 +7,7 @@ interface Props {
   deleteTodo: (id: number) => void;
 }
 
-export default function TodoItem({ todo, toggleTodo, deleteTodo }: Props) {
+const TodoItem = ({ todo, toggleTodo, deleteTodo }: Props) => {
   return (
     <li className="todo-item">
       <input
@@ -26,4 +23,6 @@ export default function TodoItem({ todo, toggleTodo, deleteTodo }: Props) {
       </button>
     </li>
   );
-}
+};
+
+export default TodoItem;

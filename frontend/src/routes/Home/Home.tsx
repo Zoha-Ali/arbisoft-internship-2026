@@ -1,4 +1,4 @@
-export default function Home() {
+const Home = () => {
   return (
     <section>
       <h1>Welcome to my Week 1 SPA</h1>
@@ -9,4 +9,6 @@ export default function Home() {
       </p>
     </section>
   );
-}
+};
+
+export default Home;

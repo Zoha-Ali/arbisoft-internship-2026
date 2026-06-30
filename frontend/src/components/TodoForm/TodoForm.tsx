@@ -1,14 +1,15 @@
 import { useState } from 'react';
+import './TodoForm.css';
 
 interface Props {
   addTodo: (title: string) => void;
 }
 
-export default function TodoForm({ addTodo }: Props) {
+const TodoForm = ({ addTodo }: Props) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState('');
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
       setError('Task title cannot be empty.');
@@ -17,10 +18,10 @@ export default function TodoForm({ addTodo }: Props) {
     addTodo(title.trim());
     setTitle('');
     setError('');
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="todo-form" onSubmit={handleSubmit}>
       <input
         type="text"
         value={title}
@@ -31,4 +32,6 @@ export default function TodoForm({ addTodo }: Props) {
       {error && <p className="form-error">{error}</p>}
     </form>
   );
-}
+};
+
+export default TodoForm;

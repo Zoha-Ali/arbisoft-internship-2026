@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import ContactForm from './ContactForm';
+import ContactForm from './ContactForm/ContactForm';
 
 describe('ContactForm', () => {
   it('renders name and email fields', () => {

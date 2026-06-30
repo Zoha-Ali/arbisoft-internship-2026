@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Home from './routes/Home';
-import About from './routes/About';
-import Todos from './routes/Todos';
+import Layout from './components/Layout/Layout';
+import Home from './routes/Home/Home';
+import About from './routes/About/About';
+import Todos from './routes/Todos/Todos';
 
-export default function App() {
+const App = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
@@ -14,4 +14,6 @@ export default function App() {
       </Route>
     </Routes>
   );
-}
+};
+
+export default App;
