@@ -1,9 +1,10 @@
-
 ## Week 1 — Frontend Fundamentals
 
 ### June 24 — Install dependencies and verify setup
+
 **Tool:** Claude Code
 **Prompt:**
+
 > Install dependencies in /frontend, then run npm run dev, npm run test, and npm run lint. Fix any errors that come up and tell me what you changed.
 
 **Result:** Installed Node.js, resolved eslint-plugin-react-hooks version conflict, all tests passed, lint clean, dev server running.
@@ -13,19 +14,23 @@
 ---
 
 ### June 24 — Build a Todos app (replace Contact route)
+
 **Tool:** Claude Code
 **Prompt:**
+
 > Replace the Contact route with a Todos route. Build a TodoForm component with validation, a TodoList that renders TodoItems, and TodoItem with a checkbox and delete button. Lift state up to the Todos page and pass props down. Update the nav link from Contact to Todos.
 
 **Result:** Generated TodoForm.tsx, TodoItem.tsx, TodoList.tsx, Todos.tsx with full state management and working prop drilling.
 **Correction:** None.
-**Kept in repo at:** frontend/src/components/Todo*.tsx, frontend/src/routes/Todos.tsx
+**Kept in repo at:** frontend/src/components/Todo\*.tsx, frontend/src/routes/Todos.tsx
 
 ---
 
 ### June 24 — Style the entire UI
+
 **Tool:** Claude Code
 **Prompt:**
+
 > Update index.css with a light off-white background, better typography, and generous spacing. Style nav links as buttons with hover states. Add form styling with borders, padding, and focus states for inputs and a teal button. Make todo items look like cards with shadows and spacing. Add strikethrough on completed items. Style error messages in red, add 0.2s transitions to interactive elements, center the "No todos yet" message in light gray, and add breathing room between nav and content.
 
 **Result:** Completely restyled index.css with cohesive color scheme, animations, and polish.
@@ -35,8 +40,10 @@
 ---
 
 ### June 24 — Write tests for Todo components
+
 **Tool:** Claude Code
 **Prompt:**
+
 > Create TodoItem.test.tsx with 3 tests: renders title, checkbox calls toggleTodo with correct ID, delete calls deleteTodo with correct ID. Create TodoList.test.tsx with 2 tests: renders all todos, shows "No todos yet" when empty.
 
 **Result:** Both test files generated with Vitest + React Testing Library. All 8 tests passing (4 new + 4 existing).
@@ -46,8 +53,10 @@
 ---
 
 ### June 24 — Update Home and About pages
+
 **Tool:** Claude Code
 **Prompt:**
+
 > Replace Home.tsx with a "Welcome to my Week 1 SPA" heading and 2–3 sentences explaining it's a React app showing routing, state management, and validation. Replace About.tsx with "About This Project" and explain what the todo app demonstrates.
 
 **Result:** Both routes now have meaningful project descriptions.
@@ -57,8 +66,10 @@
 ---
 
 ### June 24 — Fix config split (Vitest vs Vite)
+
 **Tool:** Claude Code
 **Prompt:**
+
 > Remove the test property from vite.config.ts and move it into a separate vitest.config.ts file so the build doesn't error.
 
 **Result:** Created vitest.config.ts with test settings, cleaned up vite.config.ts. Build succeeded.
@@ -76,3 +87,49 @@
 **Result:** Working FastAPI backend with SQLAlchemy ORM, Pydantic validation, and SQLite database. Tested on localhost:8000/todos.
 
 **Changes:** Created backend/ folder with 4 files and deployed locally.
+
+### July 1 — Add CRUD endpoints to FastAPI backend
+
+**Tool:** Claude Code
+**Prompt:**
+
+> I have an existing FastAPI backend in /backend with main.py, models.py, and database.py already set up. The Todo model and GET /todos endpoint already exist and work correctly — do not modify them. Add POST /todos, PUT /todos/{todo_id}, and DELETE /todos/{todo_id} endpoints following the same style as the existing GET endpoint. Use separate Pydantic request schemas for input. Return 404 if todo_id doesn't exist. Do not touch any frontend files or database.py/models.py unless absolutely necessary.
+
+**Result:** All 3 endpoints added cleanly. Tested via FastAPI /docs UI — create, update, delete all working correctly.
+**Kept in repo at:** backend/main.py
+
+---
+
+### July 1 — Connect frontend to FastAPI backend
+
+**Tool:** Claude Code
+**Prompt:**
+
+> In frontend/src/routes/Todos/Todos.tsx, update this file to connect to the FastAPI backend running at http://localhost:8000. Replace local state management with API calls for GET, POST, PUT, DELETE. Use fetch with async/await and wrap every call in try/catch. Show an error message if any call fails. Use useEffect to load todos on mount. Keep the same component structure and props — don't touch TodoForm.tsx or TodoList.tsx. Use arrow functions throughout. Do not touch any other files.
+
+**Result:** Todos now persist to SQLite database via FastAPI. Error handling working. CORS middleware added to backend.
+**Kept in repo at:** frontend/src/routes/Todos/Todos.tsx, backend/main.py
+
+---
+
+### July 1 — Update all import paths to use @ alias
+
+**Tool:** Claude Code
+**Prompt:**
+
+> In the frontend/src folder, update all relative imports that use ../ or ./ paths to use the @ alias instead. Update ALL files in src/ including components, routes, and App.tsx. Do not touch any files outside of frontend/src. Do not change anything else — only the import paths.
+
+**Result:** All 8 files updated to use @/ absolute imports. Vite and tsconfig both configured with the alias.
+**Kept in repo at:** All files in frontend/src/
+
+---
+
+### July 2 — Add react-hook-form to TodoForm
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Replace the manual useState validation in TodoForm.tsx with react-hook-form. Keep the same UI and CSS. Add validation for: required field, no whitespace-only input, and pattern rule blocking special characters to prevent SQL injection. Show error messages below the input.
+
+**Result:** TodoForm now uses react-hook-form with register, handleSubmit, reset, and formState.errors. Special characters like quotes and semicolons are blocked.
+**Kept in repo at:** frontend/src/components/TodoForm/TodoForm.tsx
