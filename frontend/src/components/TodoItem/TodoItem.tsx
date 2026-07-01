@@ -1,6 +1,5 @@
 import './TodoItem.css';
-import { Todo } from '../../types';
-
+import { Todo } from '@/types';
 interface Props {
   todo: Todo;
   toggleTodo: (id: number) => void;

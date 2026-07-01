@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import './ContactForm.css';
-import { ContactFormData } from '../../types';
+import { ContactFormData } from '@/types';
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;

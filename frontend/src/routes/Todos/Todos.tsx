@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Todo } from '../../types';
-import TodoForm from '../../components/TodoForm/TodoForm';
-import TodoList from '../../components/TodoList/TodoList';
+import { Todo } from '@/types';
+import TodoForm from '@/components/TodoForm/TodoForm';
+import TodoList from '@/components/TodoList/TodoList';
 
 const BASE_URL = 'http://localhost:8000';
 
