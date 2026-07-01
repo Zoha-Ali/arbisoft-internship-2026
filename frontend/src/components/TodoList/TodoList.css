@@ -3,6 +3,7 @@
   color: #aaa;
   font-size: 0.95rem;
   margin-top: 2rem;
+  max-width: 360px;
 }
 
 .todo-list {
