@@ -1,35 +1,43 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import './TodoForm.css';
 
 interface Props {
   addTodo: (title: string) => void;
 }
 
-const TodoForm = ({ addTodo }: Props) => {
-  const [title, setTitle] = useState('');
-  const [error, setError] = useState('');
+interface FormValues {
+  title: string;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) {
-      setError('Task title cannot be empty.');
-      return;
-    }
-    addTodo(title.trim());
-    setTitle('');
-    setError('');
+const TodoForm = ({ addTodo }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>();
+
+  const onSubmit = (data: FormValues) => {
+    addTodo(data.title.trim());
+    reset();
   };
 
   return (
-    <form className="todo-form" onSubmit={handleSubmit}>
+    <form className="todo-form" onSubmit={handleSubmit(onSubmit)}>
       <input
         type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
         placeholder="New task..."
+        {...register('title', {
+          required: 'Task title cannot be empty.',
+          validate: (value) => value.trim().length > 0 || 'Task title cannot be only spaces.',
+          pattern: {
+            value: /^[a-zA-Z0-9\s.,!?'-]+$/,
+            message: 'Title contains invalid special characters.',
+          },
+        })}
       />
       <button type="submit">Add</button>
-      {error && <p className="form-error">{error}</p>}
+      {errors.title && <p className="form-error">{errors.title.message}</p>}
     </form>
   );
 };
