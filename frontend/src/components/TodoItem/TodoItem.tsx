@@ -10,11 +10,7 @@ interface Props {
 const TodoItem = ({ todo, toggleTodo, deleteTodo }: Props) => {
   return (
     <li className="todo-item">
-      <input
-        type="checkbox"
-        checked={todo.completed}
-        onChange={() => toggleTodo(todo.id)}
-      />
+      <input type="checkbox" checked={todo.completed} onChange={() => toggleTodo(todo.id)} />
       <span className={`todo-item__title${todo.completed ? ' todo-item__title--completed' : ''}`}>
         {todo.title}
       </span>

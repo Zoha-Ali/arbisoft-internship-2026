@@ -21,7 +21,9 @@
   flex: 1;
   font-size: 1rem;
   color: #222;
-  transition: color 0.2s ease, text-decoration 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-decoration 0.2s ease;
 }
 
 .todo-item__title--completed {
@@ -37,7 +39,10 @@
   color: #888;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
   flex-shrink: 0;
 }
 

@@ -14,12 +14,7 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }: Props) => {
   return (
     <ul className="todo-list">
       {todos.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          toggleTodo={toggleTodo}
-          deleteTodo={deleteTodo}
-        />
+        <TodoItem key={todo.id} todo={todo} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
       ))}
     </ul>
   );
