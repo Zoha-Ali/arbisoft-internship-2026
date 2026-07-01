@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
+
+import { BASE_URL } from '@/utils/constants';
 import { Todo } from '@/types';
 import TodoForm from '@/components/TodoForm/TodoForm';
 import TodoList from '@/components/TodoList/TodoList';
-
-const BASE_URL = 'http://localhost:8000';
 
 const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
