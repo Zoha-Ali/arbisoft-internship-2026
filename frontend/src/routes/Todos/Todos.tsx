@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-import { BASE_URL } from '@/utils/constants';
 import { Todo } from '@/types';
+import { BASE_URL } from '@/utils/constants';
 import TodoForm from '@/components/TodoForm/TodoForm';
 import TodoList from '@/components/TodoList/TodoList';
 
 const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -16,7 +16,7 @@ const Todos = () => {
         const data = await res.json();
         setTodos(data);
       } catch {
-        setError('Failed to load todos.');
+        toast.error('Failed to load todos.');
       }
     };
 
@@ -32,8 +32,9 @@ const Todos = () => {
       });
       const created = await res.json();
       setTodos((prev) => [...prev, created]);
+      toast.success('Todo added!');
     } catch {
-      setError('Failed to add todo.');
+      toast.error('Failed to add todo.');
     }
   };
 
@@ -50,7 +51,7 @@ const Todos = () => {
       const updated = await res.json();
       setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
     } catch {
-      setError('Failed to update todo.');
+      toast.error('Failed to update todo.');
     }
   };
 
@@ -58,15 +59,15 @@ const Todos = () => {
     try {
       await fetch(`${BASE_URL}/todos/${id}`, { method: 'DELETE' });
       setTodos((prev) => prev.filter((t) => t.id !== id));
+      toast.success('Todo deleted!');
     } catch {
-      setError('Failed to delete todo.');
+      toast.error('Failed to delete todo.');
     }
   };
 
   return (
     <section>
       <h1>Todos</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
       <TodoForm addTodo={addTodo} />
       <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
     </section>

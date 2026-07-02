@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+
 import TodoItem from '@/components/TodoItem/TodoItem';
 
 const todo = { id: 1, title: 'Buy groceries', completed: false };
