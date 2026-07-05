@@ -133,3 +133,17 @@
 
 **Result:** TodoForm now uses react-hook-form with register, handleSubmit, reset, and formState.errors. Special characters like quotes and semicolons are blocked.
 **Kept in repo at:** frontend/src/components/TodoForm/TodoForm.tsx
+
+---
+
+### 2026-07-05 — Create pytest unit tests for FastAPI backend
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create a file backend/test_main.py with pytest unit tests for the FastAPI backend. Use TestClient from fastapi.testclient and an in-memory SQLite database for testing (not the real todos.db). Write tests for: GET /todos, POST /todos, PUT /todos/{id}, DELETE /todos/{id}, POST /users, GET /users, POST /todos with invalid owner_id.
+
+**Result:** Created test_main.py with 15 tests covering all endpoints. Uses dependency injection override to swap in an in-memory SQLite DB; autouse fixture drops and recreates schema between each test for isolation.
+**Kept in repo at:** backend/test_main.py
+
+---
