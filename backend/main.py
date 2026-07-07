@@ -172,6 +172,37 @@ def get_users(db: Session = Depends(get_db)):
     return db.query(models.User).all()
 
 
+@app.put("/users/{user_id}", response_model=UserResponse)
+def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    existing_email = db.query(models.User).filter(
+        models.User.email == user.email, models.User.id != user_id
+    ).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already in use")
+    existing_username = db.query(models.User).filter(
+        models.User.username == user.username, models.User.id != user_id
+    ).first()
+    if existing_username:
+        raise HTTPException(status_code=400, detail="Username already taken")
+    db_user.username = user.username
+    db_user.email = user.email
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+@app.delete("/users/{user_id}", status_code=204)
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(db_user)
+    db.commit()
+
+
 # --- Todo Endpoints ---
 
 @app.get("/todos", response_model=List[TodoResponse])
