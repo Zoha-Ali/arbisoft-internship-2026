@@ -169,3 +169,15 @@
 
 **Result:** Added update_user and delete_user endpoints with duplicate validation. Fixed password hashing using bcrypt directly with SHA-256 pre-hashing. Full User CRUD now complete.
 **Kept in repo at:** backend/main.py, backend/auth.py
+
+### 2026-07-08 — Create AuthContext with login/logout and wrap app in AuthProvider
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create a new file at src/contexts/AuthContext/AuthContext.tsx. It should export an AuthProvider component and a useAuth hook. The context should hold: accessToken (string | null, stored in React state — NOT localStorage), a login(accessToken, refreshToken) function that sets the access token in state and saves the refresh token to localStorage, and a logout() function that clears the access token from state and removes the refresh token from localStorage. Use TypeScript, arrow functions, and follow the existing absolute import convention (@/ alias) if applicable. Wrap the app with AuthProvider in main.tsx.
+
+**Result:** Created AuthContext.tsx with AuthProvider and useAuth hook. accessToken held in useState, refresh token persisted to localStorage under key "refreshToken". useAuth throws if called outside provider. Wrapped <App /> and <ToastContainer /> in <AuthProvider> in main.tsx.
+**Kept in repo at:** frontend/src/contexts/AuthContext/AuthContext.tsx, frontend/src/main.tsx
+
+---
