@@ -159,3 +159,13 @@
 **Kept in repo at:** backend/auth.py, backend/models.py, backend/main.py
 
 ---
+
+### 2026-07-08 — Add User update/delete endpoints and fix password hashing
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Add PUT /users/{user_id} and DELETE /users/{user_id} endpoints to main.py with proper duplicate email and username validation that excludes the current user being updated. Also fix the bcrypt password hashing by replacing passlib with direct bcrypt library and pre-hashing passwords with SHA-256 to avoid the 72-byte truncation issue.
+
+**Result:** Added update_user and delete_user endpoints with duplicate validation. Fixed password hashing using bcrypt directly with SHA-256 pre-hashing. Full User CRUD now complete.
+**Kept in repo at:** backend/main.py, backend/auth.py
