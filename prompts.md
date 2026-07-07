@@ -160,7 +160,7 @@
 
 ---
 
-### 2026-07-08 — Add User update/delete endpoints and fix password hashing
+### 2026-07-07 — Add User update/delete endpoints and fix password hashing
 
 **Tool:** Claude Code
 **Prompt:**
