@@ -1,11 +1,19 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 import models
+from auth import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    hash_password,
+    verify_password,
+)
 from database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
@@ -57,6 +65,94 @@ class TodoUpdate(BaseModel):
     completed: bool | None = None
 
 
+class SignupRequest(BaseModel):
+    username: str
+    email: str
+    password: str
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
+# --- Auth dependency ---
+
+_bearer = HTTPBearer()
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(_bearer),
+    db: Session = Depends(get_db),
+) -> models.User:
+    payload = decode_token(credentials.credentials)
+    if payload.get("type") != "access":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token type",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    user = db.query(models.User).filter(models.User.email == payload["sub"]).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
+# --- Auth Endpoints ---
+
+@app.post("/auth/signup", response_model=UserResponse, status_code=201)
+def signup(body: SignupRequest, db: Session = Depends(get_db)):
+    if db.query(models.User).filter(models.User.email == body.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if db.query(models.User).filter(models.User.username == body.username).first():
+        raise HTTPException(status_code=400, detail="Username already taken")
+    db_user = models.User(
+        username=body.username,
+        email=body.email,
+        hashed_password=hash_password(body.password),
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+@app.post("/auth/login", response_model=TokenResponse)
+def login(body: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == body.email).first()
+    if not user or not verify_password(body.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return TokenResponse(
+        access_token=create_access_token(user.email),
+        refresh_token=create_refresh_token(user.email),
+    )
+
+
+@app.post("/auth/refresh")
+def refresh(body: RefreshRequest, db: Session = Depends(get_db)):
+    payload = decode_token(body.refresh_token)
+    if payload.get("type") != "refresh":
+        raise HTTPException(status_code=401, detail="Invalid token type")
+    user = db.query(models.User).filter(models.User.email == payload["sub"]).first()
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    return {"access_token": create_access_token(user.email), "token_type": "bearer"}
+
+
 # --- User Endpoints ---
 
 @app.post("/users", response_model=UserResponse, status_code=201)
@@ -79,7 +175,10 @@ def get_users(db: Session = Depends(get_db)):
 # --- Todo Endpoints ---
 
 @app.get("/todos", response_model=List[TodoResponse])
-def get_todos(db: Session = Depends(get_db)):
+def get_todos(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
     return db.query(models.Todo).all()
 
 

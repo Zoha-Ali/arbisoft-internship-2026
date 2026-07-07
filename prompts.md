@@ -136,7 +136,7 @@
 
 ---
 
-### 2026-07-05 — Create pytest unit tests for FastAPI backend
+### 2026-07-06 — Create pytest unit tests for FastAPI backend
 
 **Tool:** Claude Code
 **Prompt:**
@@ -145,5 +145,17 @@
 
 **Result:** Created test_main.py with 15 tests covering all endpoints. Uses dependency injection override to swap in an in-memory SQLite DB; autouse fixture drops and recreates schema between each test for isolation.
 **Kept in repo at:** backend/test_main.py
+
+---
+
+### 2026-07-06 — Add JWT authentication to FastAPI backend
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Add JWT authentication to the FastAPI backend using python-jose[cryptography] and passlib[bcrypt]. Add hashed_password to User model. Create auth.py with hash/verify, create_access_token (2d), create_refresh_token (5d), decode_token. Add POST /auth/signup, POST /auth/login, POST /auth/refresh endpoints and a get_current_user dependency. Protect GET /todos with the dependency.
+
+**Result:** Created auth.py with passlib/jose helpers. Added hashed_password column to User model. Added 4 auth schemas, get_current_user dependency, and 3 auth endpoints to main.py. GET /todos now requires a valid Bearer token.
+**Kept in repo at:** backend/auth.py, backend/models.py, backend/main.py
 
 ---
