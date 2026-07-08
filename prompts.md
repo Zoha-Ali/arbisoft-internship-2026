@@ -301,3 +301,15 @@
 **Kept in repo at:** backend/main.py, backend/test_main.py
 
 ---
+
+### 2026-07-08 — Add auth-aware nav links and Log Out button to Layout
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update the Layout navigation to add Sign Up and Sign In links. If the user is logged in (accessToken exists via useAuth), hide Sign Up/Sign In and show a Log Out button that calls logout() and navigates to /signin.
+
+**Result:** Updated Layout.tsx to use useAuth() and useNavigate(). Renders Sign Up + Sign In links when logged out, and a Log Out button when logged in. Added .nav-logout CSS class to Layout.css so the button matches nav link styling exactly.
+**Kept in repo at:** frontend/src/components/Layout/Layout.tsx, frontend/src/components/Layout/Layout.css
+
+---

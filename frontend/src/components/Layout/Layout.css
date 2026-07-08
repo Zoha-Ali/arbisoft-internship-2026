@@ -21,3 +21,19 @@
 .nav a:hover {
   background-color: #e0e0e0;
 }
+
+.nav-logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.nav-logout:hover {
+  background-color: #e0e0e0;
+}
