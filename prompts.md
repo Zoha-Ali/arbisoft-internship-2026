@@ -325,3 +325,15 @@
 **Kept in repo at:** backend/main.py, frontend/src/routes/Todos/Todos.tsx, backend/test_main.py
 
 ---
+
+### 2026-07-08 — Add test_full_user_journey integration test
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Add one integration test called test_full_user_journey that covers the complete happy path: sign up, create a todo, fetch and confirm it appears, mark it completed and confirm the response, delete it and confirm it no longer appears. Add clear comments marking each step.
+
+**Result:** Added test_full_user_journey to test_main.py under a new "# --- Integration ---" section. Five clearly commented steps covering signup → create → list → update → delete, each with targeted assertions.
+**Kept in repo at:** backend/test_main.py
+
+---

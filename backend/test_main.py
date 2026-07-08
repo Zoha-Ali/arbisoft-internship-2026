@@ -227,3 +227,44 @@ def test_get_users_returns_created_user(client):
     response = client.get("/users")
     assert len(response.json()) == 1
     assert response.json()[0]["username"] == "zoha"
+
+
+# --- Integration ---
+
+def test_full_user_journey(client):
+    # Step 1: Sign up a new user and obtain an access token
+    signup_res = client.post(
+        "/auth/signup",
+        json={"username": "journeyuser", "email": "journey@example.com", "password": "password123"},
+    )
+    assert signup_res.status_code == 201
+    access_token = signup_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    # Step 2: Create a todo using the access token
+    create_res = client.post("/todos", json={"title": "Journey task"}, headers=headers)
+    assert create_res.status_code == 201
+    todo = create_res.json()
+    assert todo["title"] == "Journey task"
+    assert todo["completed"] is False
+    todo_id = todo["id"]
+
+    # Step 3: Fetch all todos and confirm the new todo appears
+    list_res = client.get("/todos", headers=headers)
+    assert list_res.status_code == 200
+    todo_ids = [t["id"] for t in list_res.json()]
+    assert todo_id in todo_ids
+
+    # Step 4: Mark the todo as completed and confirm the response reflects the change
+    update_res = client.put(f"/todos/{todo_id}", json={"completed": True}, headers=headers)
+    assert update_res.status_code == 200
+    assert update_res.json()["completed"] is True
+
+    # Step 5: Delete the todo and confirm it no longer appears in the list
+    delete_res = client.delete(f"/todos/{todo_id}", headers=headers)
+    assert delete_res.status_code == 204
+
+    final_list_res = client.get("/todos", headers=headers)
+    assert final_list_res.status_code == 200
+    remaining_ids = [t["id"] for t in final_list_res.json()]
+    assert todo_id not in remaining_ids
