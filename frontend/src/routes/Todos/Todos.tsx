@@ -68,6 +68,11 @@ const Todos = () => {
         headers: authHeaders(),
         body: JSON.stringify({ completed: !todo.completed }),
       });
+      if (!res.ok) {
+        const json = await res.json();
+        toast.error(json.detail ?? 'Failed to update todo.');
+        return;
+      }
       const updated = await res.json();
       setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
     } catch {
@@ -77,7 +82,12 @@ const Todos = () => {
 
   const deleteTodo = async (id: number) => {
     try {
-      await fetch(`${BASE_URL}/todos/${id}`, { method: 'DELETE', headers: authHeaders() });
+      const res = await fetch(`${BASE_URL}/todos/${id}`, { method: 'DELETE', headers: authHeaders() });
+      if (!res.ok) {
+        const json = await res.json();
+        toast.error(json.detail ?? 'Failed to delete todo.');
+        return;
+      }
       setTodos((prev) => prev.filter((t) => t.id !== id));
       toast.success('Todo deleted!');
     } catch {

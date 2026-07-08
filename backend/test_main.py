@@ -89,12 +89,8 @@ def test_get_todos_without_token_returns_401(client):
 
 # --- POST /todos ---
 
-def test_create_todo(client, auth_user, auth_headers):
-    response = client.post(
-        "/todos",
-        json={"title": "Buy milk", "owner_id": auth_user["id"]},
-        headers=auth_headers,
-    )
+def test_create_todo(client, auth_headers):
+    response = client.post("/todos", json={"title": "Buy milk"}, headers=auth_headers)
     assert response.status_code == 201
     data = response.json()
     assert data["title"] == "Buy milk"
@@ -102,27 +98,28 @@ def test_create_todo(client, auth_user, auth_headers):
     assert "id" in data
 
 
-def test_create_todo_appears_in_list(client, auth_user, auth_headers):
-    client.post("/todos", json={"title": "Buy milk", "owner_id": auth_user["id"]}, headers=auth_headers)
+def test_create_todo_sets_owner(client, auth_user, auth_headers):
+    response = client.post("/todos", json={"title": "Owned task"}, headers=auth_headers)
+    assert response.json()["owner_id"] == auth_user["id"]
+
+
+def test_create_todo_appears_in_list(client, auth_headers):
+    client.post("/todos", json={"title": "Buy milk"}, headers=auth_headers)
     response = client.get("/todos", headers=auth_headers)
     assert len(response.json()) == 1
 
 
 # --- PUT /todos/{id} ---
 
-def test_update_todo_title(client, auth_user, auth_headers):
-    created = client.post(
-        "/todos", json={"title": "Old title", "owner_id": auth_user["id"]}, headers=auth_headers
-    ).json()
+def test_update_todo_title(client, auth_headers):
+    created = client.post("/todos", json={"title": "Old title"}, headers=auth_headers).json()
     response = client.put(f"/todos/{created['id']}", json={"title": "New title"}, headers=auth_headers)
     assert response.status_code == 200
     assert response.json()["title"] == "New title"
 
 
-def test_update_todo_completed(client, auth_user, auth_headers):
-    created = client.post(
-        "/todos", json={"title": "Task", "owner_id": auth_user["id"]}, headers=auth_headers
-    ).json()
+def test_update_todo_completed(client, auth_headers):
+    created = client.post("/todos", json={"title": "Task"}, headers=auth_headers).json()
     response = client.put(f"/todos/{created['id']}", json={"completed": True}, headers=auth_headers)
     assert response.status_code == 200
     assert response.json()["completed"] is True
@@ -133,28 +130,22 @@ def test_update_todo_not_found(client, auth_headers):
     assert response.status_code == 404
 
 
-def test_update_todo_forbidden(client, auth_user, auth_headers, other_auth_headers):
-    created = client.post(
-        "/todos", json={"title": "Mine", "owner_id": auth_user["id"]}, headers=auth_headers
-    ).json()
+def test_update_todo_forbidden(client, auth_headers, other_auth_headers):
+    created = client.post("/todos", json={"title": "Mine"}, headers=auth_headers).json()
     response = client.put(f"/todos/{created['id']}", json={"title": "Stolen"}, headers=other_auth_headers)
     assert response.status_code == 403
 
 
 # --- DELETE /todos/{id} ---
 
-def test_delete_todo(client, auth_user, auth_headers):
-    created = client.post(
-        "/todos", json={"title": "Delete me", "owner_id": auth_user["id"]}, headers=auth_headers
-    ).json()
+def test_delete_todo(client, auth_headers):
+    created = client.post("/todos", json={"title": "Delete me"}, headers=auth_headers).json()
     response = client.delete(f"/todos/{created['id']}", headers=auth_headers)
     assert response.status_code == 204
 
 
-def test_delete_todo_removes_from_list(client, auth_user, auth_headers):
-    created = client.post(
-        "/todos", json={"title": "Delete me", "owner_id": auth_user["id"]}, headers=auth_headers
-    ).json()
+def test_delete_todo_removes_from_list(client, auth_headers):
+    created = client.post("/todos", json={"title": "Delete me"}, headers=auth_headers).json()
     client.delete(f"/todos/{created['id']}", headers=auth_headers)
     todos = client.get("/todos", headers=auth_headers).json()
     assert all(t["id"] != created["id"] for t in todos)
@@ -165,19 +156,10 @@ def test_delete_todo_not_found(client, auth_headers):
     assert response.status_code == 404
 
 
-def test_delete_todo_forbidden(client, auth_user, auth_headers, other_auth_headers):
-    created = client.post(
-        "/todos", json={"title": "Mine", "owner_id": auth_user["id"]}, headers=auth_headers
-    ).json()
+def test_delete_todo_forbidden(client, auth_headers, other_auth_headers):
+    created = client.post("/todos", json={"title": "Mine"}, headers=auth_headers).json()
     response = client.delete(f"/todos/{created['id']}", headers=other_auth_headers)
     assert response.status_code == 403
-
-
-# --- POST /todos with invalid owner_id ---
-
-def test_create_todo_invalid_owner_id(client, auth_headers):
-    response = client.post("/todos", json={"title": "Orphan todo", "owner_id": 999}, headers=auth_headers)
-    assert response.status_code == 404
 
 
 # --- POST /auth/signup ---

@@ -57,7 +57,6 @@ class TodoResponse(BaseModel):
 
 class TodoCreate(BaseModel):
     title: str
-    owner_id: int | None = None
 
 
 class TodoUpdate(BaseModel):
@@ -226,12 +225,12 @@ def get_todos(
 
 
 @app.post("/todos", response_model=TodoResponse, status_code=201)
-def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
-    if todo.owner_id:
-        user = db.query(models.User).filter(models.User.id == todo.owner_id).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-    db_todo = models.Todo(title=todo.title, completed=False, owner_id=todo.owner_id)
+def create_todo(
+    todo: TodoCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    db_todo = models.Todo(title=todo.title, completed=False, owner_id=current_user.id)
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)

@@ -313,3 +313,15 @@
 **Kept in repo at:** frontend/src/components/Layout/Layout.tsx, frontend/src/components/Layout/Layout.css
 
 ---
+
+### 2026-07-08 — Require auth on POST /todos, auto-set owner_id, guard toggleTodo/deleteTodo
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update POST /todos to require authentication via get_current_user and automatically set owner_id to current_user.id, ignoring any owner_id from the client. Remove owner_id from TodoCreate. In Todos.tsx, update toggleTodo and deleteTodo to check res.ok before updating state — on failure show error toast with backend message and don't modify state.
+
+**Result:** Removed owner_id from TodoCreate schema. Added get_current_user dependency to POST /todos; owner_id now always set to current_user.id. Added res.ok checks to toggleTodo and deleteTodo in Todos.tsx with json.detail error toasts. Updated test_main.py: removed owner_id from all POST /todos calls, removed test_create_todo_invalid_owner_id, added test_create_todo_sets_owner, cleaned up auth_user fixture usage.
+**Kept in repo at:** backend/main.py, frontend/src/routes/Todos/Todos.tsx, backend/test_main.py
+
+---
