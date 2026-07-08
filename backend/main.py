@@ -86,6 +86,12 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class SignupResponse(UserResponse):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
 # --- Auth dependency ---
 
 _bearer = HTTPBearer()
@@ -114,7 +120,7 @@ def get_current_user(
 
 # --- Auth Endpoints ---
 
-@app.post("/auth/signup", response_model=UserResponse, status_code=201)
+@app.post("/auth/signup", response_model=SignupResponse, status_code=201)
 def signup(body: SignupRequest, db: Session = Depends(get_db)):
     if db.query(models.User).filter(models.User.email == body.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -128,7 +134,13 @@ def signup(body: SignupRequest, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user
+    return SignupResponse(
+        id=db_user.id,
+        username=db_user.username,
+        email=db_user.email,
+        access_token=create_access_token(db_user.email),
+        refresh_token=create_refresh_token(db_user.email),
+    )
 
 
 @app.post("/auth/login", response_model=TokenResponse)

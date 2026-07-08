@@ -181,3 +181,15 @@
 **Kept in repo at:** frontend/src/contexts/AuthContext/AuthContext.tsx, frontend/src/main.tsx
 
 ---
+
+### 2026-07-08 — Return tokens from /auth/signup alongside user data
+
+**Tool:** Claude Code
+**Prompt:**
+
+> In backend/main.py, update the /auth/signup endpoint so that after creating the user, it also generates an access token and refresh token. Change the response to include the user data plus access_token and refresh_token. Update the UserResponse model or create a new response model if needed to include these fields.
+
+**Result:** Added SignupResponse model (extends UserResponse with access_token, refresh_token, token_type). Updated /auth/signup to return a SignupResponse instance with both tokens generated via the existing create_access_token/create_refresh_token functions.
+**Kept in repo at:** backend/main.py
+
+---
