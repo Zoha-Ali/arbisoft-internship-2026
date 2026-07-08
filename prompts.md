@@ -193,3 +193,39 @@
 **Kept in repo at:** backend/main.py
 
 ---
+
+### 2026-07-08 — Create SignUp page with react-hook-form and auth integration
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create a new file at src/routes/SignUp/SignUp.tsx. Build a Sign Up page using react-hook-form with username (min 3), email (valid format), and password (min 8) fields. On submit POST to ${BASE_URL}/auth/signup, call login() from useAuth on success, show success toast and navigate to /todos. On failure show error toast with backend detail. Add /signup route to App.tsx.
+
+**Result:** Created SignUp.tsx with react-hook-form validation, fetch call to /auth/signup, useAuth login(), react-toastify toasts, and useNavigate redirect. Button disabled during submission. Added SignUp import and /signup Route to App.tsx.
+**Kept in repo at:** frontend/src/routes/SignUp/SignUp.tsx, frontend/src/App.tsx
+
+---
+
+### 2026-07-08 — Style SignUp.tsx with Tailwind CSS matching TodoForm visual style
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Style SignUp.tsx using Tailwind CSS classes to match the visual style of the existing TodoForm component — proper spacing between fields, a styled input box (border, padding, focus ring), a styled submit button matching the app's primary button style, and a clean centered card/container layout for the whole form.
+
+**Result:** Added Tailwind classes to SignUp.tsx for a centered card layout (white card, shadow, max-w-[360px]), inputs with border/padding/focus ring matching TodoForm.css exact colours (#2a9d8f teal), error messages matching .form-error style, and a submit button matching the "Add" button. No new CSS files created.
+**Kept in repo at:** frontend/src/routes/SignUp/SignUp.tsx
+
+---
+
+### 2026-07-08 — Fix SignUp page centering and spacing to match app layout pattern
+
+**Tool:** Claude Code
+**Prompt:**
+
+> The SignUp page isn't properly centered — it should be horizontally centered on the page, and the layout should fit within the viewport without requiring scrolling. Match how centering/spacing is handled elsewhere in the app.
+
+**Result:** Removed full-viewport centering wrapper (min-h-screen flex) and card div — Layout's .app-shell (max-width: 600px; margin: 0 auto) already handles centering for all routes. Reduced vertical spacing (gap-3, py-2.5) and restored plain <section>/<h1> to match other route pages.
+**Kept in repo at:** frontend/src/routes/SignUp/SignUp.tsx
+
+---
