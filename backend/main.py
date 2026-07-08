@@ -239,10 +239,17 @@ def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
 
 
 @app.put("/todos/{todo_id}", response_model=TodoResponse)
-def update_todo(todo_id: int, todo: TodoUpdate, db: Session = Depends(get_db)):
+def update_todo(
+    todo_id: int,
+    todo: TodoUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
     db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
     if db_todo is None:
         raise HTTPException(status_code=404, detail="Todo not found")
+    if db_todo.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this todo")
     if todo.title is not None:
         db_todo.title = todo.title
     if todo.completed is not None:
@@ -253,9 +260,15 @@ def update_todo(todo_id: int, todo: TodoUpdate, db: Session = Depends(get_db)):
 
 
 @app.delete("/todos/{todo_id}", status_code=204)
-def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+def delete_todo(
+    todo_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
     db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
     if db_todo is None:
         raise HTTPException(status_code=404, detail="Todo not found")
+    if db_todo.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this todo")
     db.delete(db_todo)
     db.commit()

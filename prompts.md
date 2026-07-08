@@ -289,3 +289,15 @@
 **Kept in repo at:** backend/test_main.py
 
 ---
+
+### 2026-07-08 — Enforce ownership on PUT/DELETE /todos and add 403 tests
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update PUT /todos/{id} and DELETE /todos/{id} in main.py to check that the todo's owner_id matches the authenticated user's id, returning 403 if not. Update test_main.py to add tests confirming a user cannot update or delete another user's todo.
+
+**Result:** Added get_current_user dependency to both PUT and DELETE /todos endpoints with a 403 check on owner_id mismatch. Refactored auth_user fixture to return full signup response (including user id). Updated all PUT/DELETE todo tests to create todos with owner_id=auth_user["id"]. Added other_auth_headers fixture for a second user. Added test_update_todo_forbidden and test_delete_todo_forbidden (both expect 403).
+**Kept in repo at:** backend/main.py, backend/test_main.py
+
+---
