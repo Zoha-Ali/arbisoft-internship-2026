@@ -221,7 +221,7 @@ def get_todos(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    return db.query(models.Todo).all()
+    return db.query(models.Todo).filter(models.Todo.owner_id == current_user.id).all()
 
 
 @app.post("/todos", response_model=TodoResponse, status_code=201)

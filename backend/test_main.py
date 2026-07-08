@@ -229,6 +229,23 @@ def test_get_users_returns_created_user(client):
     assert response.json()[0]["username"] == "zoha"
 
 
+def test_user_only_sees_own_todos(client, auth_headers, other_auth_headers):
+    # User A creates a todo
+    client.post("/todos", json={"title": "User A task"}, headers=auth_headers)
+    # User B creates a todo
+    client.post("/todos", json={"title": "User B task"}, headers=other_auth_headers)
+
+    # User A's list should only contain their own todo
+    a_todos = client.get("/todos", headers=auth_headers).json()
+    assert len(a_todos) == 1
+    assert a_todos[0]["title"] == "User A task"
+
+    # User B's list should only contain their own todo
+    b_todos = client.get("/todos", headers=other_auth_headers).json()
+    assert len(b_todos) == 1
+    assert b_todos[0]["title"] == "User B task"
+
+
 # --- Integration ---
 
 def test_full_user_journey(client):

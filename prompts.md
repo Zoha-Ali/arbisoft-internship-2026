@@ -337,3 +337,15 @@
 **Kept in repo at:** backend/test_main.py
 
 ---
+
+### 2026-07-08 — Filter GET /todos by authenticated user and add isolation test
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update GET /todos to only return todos belonging to the currently authenticated user (filter by owner_id == current_user.id). Add a test confirming a user only sees their own todos, not another user's.
+
+**Result:** Added .filter(models.Todo.owner_id == current_user.id) to the GET /todos query. Added test_user_only_sees_own_todos: both users create a todo, each list call returns exactly one item belonging only to that user.
+**Kept in repo at:** backend/main.py, backend/test_main.py
+
+---
