@@ -277,3 +277,15 @@
 **Kept in repo at:** frontend/src/contexts/AuthContext/AuthContext.tsx, frontend/src/routes/Todos/Todos.tsx
 
 ---
+
+### 2026-07-08 — Update test_main.py for JWT-protected /todos and add auth tests
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update backend/test_main.py to fix failing tests now that GET /todos requires JWT. Add auth_token and auth_headers fixtures. Update all /todos tests to include the Bearer token. Add 5+ new tests covering signup success, duplicate signup, login success, wrong password, and accessing /todos without a token (401).
+
+**Result:** Added auth_token fixture (signs up via /auth/signup, returns access token) and auth_headers fixture. Updated all 10 /todos tests to pass headers. Migrated test_create_user and test_get_users_returns_created_user to use /auth/signup instead of /users (which now requires hashed_password). Added 6 new tests: signup success, duplicate email, duplicate username, login success, wrong password, unknown email, and 401 on unauthenticated GET /todos.
+**Kept in repo at:** backend/test_main.py
+
+---
