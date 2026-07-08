@@ -241,3 +241,39 @@
 **Kept in repo at:** frontend/src/routes/SignIn/SignIn.tsx, frontend/src/routes/SignUp/SignUp.tsx, frontend/src/App.tsx
 
 ---
+
+### 2026-07-08 — Add Authorization header to Todos fetch calls and guard TodoList against non-array todos
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update Todos.tsx to include the access token from useAuth() in the Authorization: Bearer header for all requests to /todos. Update TodoList.tsx to safely handle the case where todos is not yet an array (default to empty array) so a failed or pending request doesn't crash the page.
+
+**Result:** Added useAuth() to Todos.tsx, built an authHeaders() helper that injects the Bearer token, applied it to all four fetch calls, and added accessToken to the useEffect dependency array so todos re-fetch on login. Defaulted todos prop to [] in TodoList.tsx destructuring.
+**Kept in repo at:** frontend/src/routes/Todos/Todos.tsx, frontend/src/components/TodoList/TodoList.tsx
+
+---
+
+### 2026-07-08 — Guard fetchTodos against non-ok responses in Todos.tsx
+
+**Tool:** Claude Code
+**Prompt:**
+
+> In Todos.tsx, update fetchTodos inside useEffect to check res.ok before calling setTodos. If not ok (e.g. 401), don't call setTodos with the error object — show a toast error and redirect to /signin.
+
+**Result:** Added res.ok check in fetchTodos. 401 shows "Session expired" toast and navigates to /signin. Other non-ok statuses show a generic error toast. setTodos is only called on a successful response. Added useNavigate import.
+**Kept in repo at:** frontend/src/routes/Todos/Todos.tsx
+
+---
+
+### 2026-07-08 — Add session restore via refresh token on app load in AuthContext
+
+**Tool:** Claude Code
+**Prompt:**
+
+> In AuthContext.tsx, add logic that runs once on app load: check localStorage for a refresh token, call POST /auth/refresh if found, set the returned access token in state. If refresh fails, clear localStorage. Expose isLoading boolean so components like Todos can wait before treating the user as unauthenticated.
+
+**Result:** Added isLoading state (starts true) and a restore useEffect in AuthProvider. Calls /auth/refresh with stored token; sets accessToken on success, clears localStorage on failure. Sets isLoading=false in finally block. Updated Todos.tsx to skip fetchTodos and render a loading state while isLoading is true, then proceed normally.
+**Kept in repo at:** frontend/src/contexts/AuthContext/AuthContext.tsx, frontend/src/routes/Todos/Todos.tsx
+
+---

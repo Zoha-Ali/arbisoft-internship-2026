@@ -8,7 +8,7 @@ interface Props {
   deleteTodo: (id: number) => void;
 }
 
-const TodoList = ({ todos, toggleTodo, deleteTodo }: Props) => {
+const TodoList = ({ todos = [], toggleTodo, deleteTodo }: Props) => {
   if (todos.length === 0) return <p className="todo-empty">No todos yet.</p>;
 
   return (
