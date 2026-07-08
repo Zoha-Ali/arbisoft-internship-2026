@@ -6,12 +6,11 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { BASE_URL } from '@/utils/constants';
 
 interface FormValues {
-  username: string;
   email: string;
   password: string;
 }
 
-const SignUp = () => {
+const SignIn = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -23,7 +22,7 @@ const SignUp = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await fetch(`${BASE_URL}/auth/signup`, {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -32,12 +31,12 @@ const SignUp = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.detail ?? 'Sign up failed.');
+        toast.error(json.detail ?? 'Sign in failed.');
         return;
       }
 
       login(json.access_token, json.refresh_token);
-      toast.success('Account created! Welcome.');
+      toast.success('Welcome back!');
       navigate('/todos');
     } catch {
       toast.error('Unable to reach the server. Please try again.');
@@ -51,26 +50,8 @@ const SignUp = () => {
 
   return (
     <section>
-      <h1>Sign Up</h1>
+      <h1>Sign In</h1>
       <form className="flex flex-col gap-3 max-w-[360px]" onSubmit={handleSubmit(onSubmit)}>
-        <div className={fieldClass}>
-          <label htmlFor="username" className="text-sm font-medium">Username</label>
-          <input
-            id="username"
-            type="text"
-            className={inputClass}
-            {...register('username', {
-              required: 'Username is required.',
-              minLength: { value: 3, message: 'Username must be at least 3 characters.' },
-            })}
-          />
-          {errors.username && (
-            <p className="flex items-center gap-1 text-[#c0392b] text-[0.85rem] before:content-['⚠'] before:text-[0.9rem] m-0">
-              {errors.username.message}
-            </p>
-          )}
-        </div>
-
         <div className={fieldClass}>
           <label htmlFor="email" className="text-sm font-medium">Email</label>
           <input
@@ -100,7 +81,6 @@ const SignUp = () => {
             className={inputClass}
             {...register('password', {
               required: 'Password is required.',
-              minLength: { value: 8, message: 'Password must be at least 8 characters.' },
             })}
           />
           {errors.password && (
@@ -115,16 +95,16 @@ const SignUp = () => {
           disabled={isSubmitting}
           className="self-start mt-1 px-6 py-3 bg-[#2a9d8f] hover:bg-[#21867a] hover:-translate-y-px text-white border-none rounded-md text-base font-[inherit] cursor-pointer transition-[background-color,transform] duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
         >
-          {isSubmitting ? 'Creating account...' : 'Sign Up'}
+          {isSubmitting ? 'Signing in...' : 'Sign In'}
         </button>
 
         <p className="text-sm text-[#555] m-0">
-          Already have an account?{' '}
-          <Link to="/signin" className="text-[#2a9d8f] hover:underline">Sign in</Link>
+          Don't have an account?{' '}
+          <Link to="/signup" className="text-[#2a9d8f] hover:underline">Sign up</Link>
         </p>
       </form>
     </section>
   );
 };
 
-export default SignUp;
+export default SignIn;

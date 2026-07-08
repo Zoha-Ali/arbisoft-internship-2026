@@ -229,3 +229,15 @@
 **Kept in repo at:** frontend/src/routes/SignUp/SignUp.tsx
 
 ---
+
+### 2026-07-08 — Create SignIn page and add cross-links between SignIn/SignUp
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create src/routes/SignIn/SignIn.tsx matching SignUp.tsx structure and Tailwind styling. Fields: email (required, valid format) and password (required). POST to /auth/login, call login() on success, toast and navigate to /todos. On failure show error toast. Add /signin route to App.tsx. Add cross-links: SignUp -> /signin and SignIn -> /signup.
+
+**Result:** Created SignIn.tsx with email+password fields, fetch to /auth/login, useAuth login(), toasts, and navigate. Added Link import and "Don't have an account?" link to SignIn. Added Link import and "Already have an account?" link to SignUp. Added SignIn import and /signin Route to App.tsx.
+**Kept in repo at:** frontend/src/routes/SignIn/SignIn.tsx, frontend/src/routes/SignUp/SignUp.tsx, frontend/src/App.tsx
+
+---
