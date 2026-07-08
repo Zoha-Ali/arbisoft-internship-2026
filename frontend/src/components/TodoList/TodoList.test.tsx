@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import TodoList from './TodoList';
+
+import TodoList from '@/components/TodoList/TodoList';
 
 const todos = [
   { id: 1, title: 'Buy groceries', completed: false },
