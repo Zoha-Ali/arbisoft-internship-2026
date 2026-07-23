@@ -349,3 +349,15 @@
 **Kept in repo at:** backend/main.py, backend/test_main.py
 
 ---
+
+### 2026-07-23 — Create Week 4 research agent with skill, memory, hook, plugin, and agentic loop
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create backend/agent.py: a research agent using raw requests to the Anthropic API (claude-sonnet-5). Add web_search skill (Tavily), read_file plugin (txt/pdf via pypdf), log_tool_call hook decorator, in-memory session_memory list, and a text-based agentic loop. Demo with a multi-hop question requiring web search + memory recall.
+
+**Result:** Created agent.py with all five pieces. Installed pypdf and python-dotenv. Fixed Windows cp1252 encoding by reconfiguring stdout to UTF-8. Agent ran successfully: 2 web_search tool calls + hook logs + memory injection + final answer.
+**Kept in repo at:** backend/agent.py
+
+---
