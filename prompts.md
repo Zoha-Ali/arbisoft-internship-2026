@@ -361,3 +361,15 @@
 **Kept in repo at:** backend/agent.py
 
 ---
+
+### 2026-07-24 — Create MCP server exposing todos resource and create_todo tool
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create backend/mcp_server.py: an MCP server using the mcp Python package. Expose ONE resource (todos://all returning all todos as JSON) and ONE tool (create_todo(title)). Use stdio transport. Add clear comments explaining resource vs tool in MCP terms and how to connect it via .mcp.json. Also create .mcp.json at the repo root.
+
+**Result:** Installed mcp[cli]. Created mcp_server.py using FastMCP high-level API with @mcp.resource and @mcp.tool decorators, reusing existing models.py and database.py. Created .mcp.json at repo root pointing to backend/mcp_server.py. Verified server starts and responds to MCP initialize correctly.
+**Kept in repo at:** backend/mcp_server.py, .mcp.json
+
+---
