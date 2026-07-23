@@ -385,3 +385,64 @@
 **Kept in repo at:** backend/orchestrator.py
 
 ---
+
+### 2026-07-24 — Add POST /agent/ask endpoint to main.py
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Add a new endpoint POST /agent/ask to backend/main.py that accepts a JSON body {"question": "..."}, calls the existing run_agent function from agent.py (import it), and returns the agent's final answer as JSON {"answer": "..."}. No authentication needed. Make sure agent.py is structured so run_agent can be imported (refactor if needed).
+
+**Result:** Imported run_agent from agent.py in main.py (no refactor needed — run_agent was already a proper function with demo under if __name__ == "__main__"). Added AgentRequest and AgentResponse Pydantic models and POST /agent/ask route at the bottom of main.py.
+**Kept in repo at:** backend/main.py
+
+---
+
+
+### 2026-07-24 — Create Agent page with question/answer UI
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create src/routes/Agent/Agent.tsx: a page with a textarea for the user's question, a submit button, and an answer display area. On submit, POST to ${BASE_URL}/agent/ask with { question }. Show loading state (button disabled, "Thinking..."). Display returned answer in a styled box. Error toast on failure. Add /agent route to App.tsx and an "Agent" nav link in Layout.tsx.
+
+**Result:** Created Agent.tsx using local useState (no react-hook-form needed — single unvalidated textarea). Textarea disables during loading. Answer renders in a teal-bordered box with whitespace-pre-wrap. Added Agent import and /agent route to App.tsx. Added Agent link to Layout.tsx nav alongside existing links.
+**Kept in repo at:** frontend/src/routes/Agent/Agent.tsx, frontend/src/App.tsx, frontend/src/components/Layout/Layout.tsx
+
+---
+
+### 2026-07-24 — Add POST /orchestrator/ask endpoint
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Add POST /orchestrator/ask to backend/main.py that accepts {"question": "..."}, calls orchestrate() from orchestrator.py, and returns {"answer": "...", "trace": [...]}. Refactor orchestrate() to return both values instead of only the answer string.
+
+**Result:** Changed orchestrate() return type from str to dict {"answer": str, "trace": list[dict]}. Updated demo call sites to unpack the dict. Added OrchestratorTraceEntry and OrchestratorResponse Pydantic models to main.py. Added POST /orchestrator/ask route reusing AgentRequest. Imported orchestrate in main.py.
+**Kept in repo at:** backend/orchestrator.py, backend/main.py
+
+---
+
+### 2026-07-24 — Update Agent page to call /orchestrator/ask and show trace
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update Agent.tsx to call POST /orchestrator/ask instead of /agent/ask. Keep the same textarea/submit/loading pattern. After receiving the response, display the answer as before, and show the trace array in a collapsible section ("Show agent trace") with each entry's timestamp, agent name, and event.
+
+**Result:** Added TraceEntry interface and AGENT_COLORS map (supervisor=orange, research_worker=teal, todo_worker=blue). Added trace and traceOpen state. Fetch now hits /orchestrator/ask and stores json.trace. Collapsible trace panel renders as a monospace list with timestamp, coloured agent name, and event text. Panel resets on each new submission.
+**Kept in repo at:** frontend/src/routes/Agent/Agent.tsx
+
+---
+
+### 2026-07-24 — Add auth to /orchestrator/ask and thread owner_id to db_create_todo
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Update POST /orchestrator/ask in main.py to require authentication via Depends(get_current_user) and pass current_user.id through to orchestrate(). Update orchestrate() to accept owner_id and pass it to todo_worker. Update db_create_todo to accept and use owner_id instead of leaving it null. Update Agent.tsx to include Authorization header using useAuth(), show a sign-in prompt for unauthenticated users, and redirect to /signin on 401.
+
+**Result:** Added owner_id: int | None = None param to db_create_todo, todo_worker, and orchestrate(). todo_worker now builds its tools dict locally using functools.partial to bind owner_id to db_create_todo, keeping the tool loop's single-string-arg contract intact. Removed now-unused TODO_TOOLS module-level dict and WORKERS dict. orchestrate() dispatches with explicit if/else instead of WORKERS lookup so owner_id can be forwarded selectively. main.py endpoint gains Depends(get_current_user) and passes current_user.id. Agent.tsx imports useAuth and useNavigate; shows loading placeholder during auth restore; shows sign-in prompt when not logged in; includes Authorization header on fetch; redirects to /signin on 401.
+**Kept in repo at:** backend/orchestrator.py, backend/main.py, frontend/src/routes/Agent/Agent.tsx
+
+---

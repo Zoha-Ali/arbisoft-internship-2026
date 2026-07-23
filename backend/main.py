@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 import models
+from agent import run_agent
+from orchestrator import orchestrate
 from auth import (
     create_access_token,
     create_refresh_token,
@@ -271,3 +273,37 @@ def delete_todo(
         raise HTTPException(status_code=403, detail="Not authorized to delete this todo")
     db.delete(db_todo)
     db.commit()
+
+
+class AgentRequest(BaseModel):
+    question: str
+
+
+class AgentResponse(BaseModel):
+    answer: str
+
+
+@app.post("/agent/ask", response_model=AgentResponse)
+def agent_ask(body: AgentRequest):
+    answer = run_agent(body.question)
+    return AgentResponse(answer=answer)
+
+
+class OrchestratorTraceEntry(BaseModel):
+    ts: str
+    agent: str
+    event: str
+
+
+class OrchestratorResponse(BaseModel):
+    answer: str
+    trace: List[OrchestratorTraceEntry]
+
+
+@app.post("/orchestrator/ask", response_model=OrchestratorResponse)
+def orchestrator_ask(
+    body: AgentRequest,
+    current_user: models.User = Depends(get_current_user),
+):
+    result = orchestrate(body.question, owner_id=current_user.id)
+    return OrchestratorResponse(answer=result["answer"], trace=result["trace"])

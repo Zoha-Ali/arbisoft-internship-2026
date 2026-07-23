@@ -41,7 +41,7 @@ import re
 import sys
 import json
 from datetime import datetime
-from functools import wraps
+from functools import wraps, partial
 
 import requests
 from dotenv import load_dotenv
@@ -273,13 +273,13 @@ models.Base.metadata.create_all(bind=engine)
 
 
 @_todo_hook
-def db_create_todo(title: str) -> str:
+def db_create_todo(title: str, owner_id: int | None = None) -> str:
     """Create a new todo in the SQLite database and return a confirmation."""
     if not title.strip():
         return "Error: title cannot be empty."
     db = SessionLocal()
     try:
-        todo = models.Todo(title=title.strip(), completed=False, owner_id=None)
+        todo = models.Todo(title=title.strip(), completed=False, owner_id=owner_id)
         db.add(todo)
         db.commit()
         db.refresh(todo)
@@ -319,15 +319,14 @@ Rules:
 3. If the user asks you to create multiple todos, call db_create_todo once per item.
 """
 
-TODO_TOOLS = {
-    "db_create_todo": db_create_todo,
-    "db_list_todos":  db_list_todos,
-}
-
-
-def todo_worker(task: str) -> str:
+def todo_worker(task: str, owner_id: int | None = None) -> str:
     """Worker that manages todos in the database."""
-    return run_worker_loop("todo_worker", TODO_SYSTEM, TODO_TOOLS, task)
+    tools = {
+        # Bind owner_id so the tool loop can call it with a single string arg.
+        "db_create_todo": partial(db_create_todo, owner_id=owner_id),
+        "db_list_todos":  db_list_todos,
+    }
+    return run_worker_loop("todo_worker", TODO_SYSTEM, tools, task)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -376,21 +375,18 @@ def supervisor_route(user_request: str) -> str:
 
 
 # ── TOP-LEVEL ORCHESTRATOR ────────────────────────────────────────────────────
-WORKERS = {
-    "research_worker": research_worker,
-    "todo_worker":     todo_worker,
-}
-
-
-def orchestrate(user_request: str) -> str:
+def orchestrate(user_request: str, owner_id: int | None = None) -> dict:
     """
     Entry point for the multi-agent system.
 
     1. Supervisor reads the request and picks a worker.
     2. The chosen worker runs its own agentic loop.
-    3. Returns the worker's final answer.
+    3. Returns {"answer": str, "trace": list[dict]} so callers get both the
+       final answer and the full execution trace without relying on globals.
+
+    owner_id is forwarded to todo_worker so todos are created under the
+    correct user rather than left with a null owner.
     """
-    # Clear the trace for each fresh orchestration run.
     TRACE.clear()
 
     print(f"\n{'='*60}")
@@ -398,16 +394,18 @@ def orchestrate(user_request: str) -> str:
     print(f"{'='*60}")
 
     chosen_worker = supervisor_route(user_request)
-    worker_fn     = WORKERS[chosen_worker]
 
     print(f"\n  Supervisor routed to: {chosen_worker}\n")
 
-    answer = worker_fn(user_request)
+    if chosen_worker == "todo_worker":
+        answer = todo_worker(user_request, owner_id=owner_id)
+    else:
+        answer = research_worker(user_request)
 
     print(f"\n  ANSWER:\n  {answer}\n")
     print_trace()
 
-    return answer
+    return {"answer": answer, "trace": list(TRACE)}
 
 
 # ── DEMO ──────────────────────────────────────────────────────────────────────
@@ -421,9 +419,11 @@ if __name__ == "__main__":
     print("\n" + "#" * 60)
     print("# DEMO 1 — Research request")
     print("#" * 60)
-    orchestrate("What is the latest version of Python and what are its main new features?")
+    result1 = orchestrate("What is the latest version of Python and what are its main new features?")
+    print(f"\nTrace entries: {len(result1['trace'])}")
 
     print("\n" + "#" * 60)
     print("# DEMO 2 — Todo request")
     print("#" * 60)
-    orchestrate("Add a todo called 'Review multi-agent orchestration notes'")
+    result2 = orchestrate("Add a todo called 'Review multi-agent orchestration notes'")
+    print(f"\nTrace entries: {len(result2['trace'])}")

@@ -18,6 +18,7 @@ const Layout = () => {
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/todos">Todos</Link>
+        <Link to="/agent">Agent</Link>
         {accessToken ? (
           <button className="nav-logout" onClick={handleLogout}>Log Out</button>
         ) : (
