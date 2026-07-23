@@ -446,3 +446,15 @@
 **Kept in repo at:** backend/orchestrator.py, backend/main.py, frontend/src/routes/Agent/Agent.tsx
 
 ---
+
+### 2026-07-24 — Filter db_list_todos by owner_id in orchestrator.py
+
+**Tool:** Claude Code
+**Prompt:**
+
+> db_list_todos in orchestrator.py returns ALL todos regardless of owner. Fix it to accept and filter by owner_id (.filter(models.Todo.owner_id == owner_id)), and bind it with functools.partial in todo_worker's tools dict — same pattern as db_create_todo.
+
+**Result:** Added owner_id param to db_list_todos; query now filters by owner_id when provided (no filter only if owner_id is None, matching the guard pattern used elsewhere). Updated todo_worker's tools dict to bind db_list_todos with partial(db_list_todos, owner_id=owner_id). Confirmed db_create_todo was already correct from the previous fix.
+**Kept in repo at:** backend/orchestrator.py
+
+---

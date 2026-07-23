@@ -292,11 +292,14 @@ def db_create_todo(title: str, owner_id: int | None = None) -> str:
 
 
 @_todo_hook
-def db_list_todos(_: str = "") -> str:
-    """Return all todos in the database as a JSON string."""
+def db_list_todos(_: str = "", owner_id: int | None = None) -> str:
+    """Return todos belonging to owner_id as a JSON string."""
     db = SessionLocal()
     try:
-        todos = db.query(models.Todo).all()
+        query = db.query(models.Todo)
+        if owner_id is not None:
+            query = query.filter(models.Todo.owner_id == owner_id)
+        todos = query.all()
         result = [{"id": t.id, "title": t.title, "completed": t.completed} for t in todos]
         return json.dumps(result, indent=2) if result else "No todos found."
     finally:
@@ -322,9 +325,9 @@ Rules:
 def todo_worker(task: str, owner_id: int | None = None) -> str:
     """Worker that manages todos in the database."""
     tools = {
-        # Bind owner_id so the tool loop can call it with a single string arg.
+        # Bind owner_id so the tool loop can call each with a single string arg.
         "db_create_todo": partial(db_create_todo, owner_id=owner_id),
-        "db_list_todos":  db_list_todos,
+        "db_list_todos":  partial(db_list_todos,  owner_id=owner_id),
     }
     return run_worker_loop("todo_worker", TODO_SYSTEM, tools, task)
 
