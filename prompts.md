@@ -373,3 +373,15 @@
 **Kept in repo at:** backend/mcp_server.py, .mcp.json
 
 ---
+
+### 2026-07-24 — Create multi-agent orchestrator with supervisor + worker pattern
+
+**Tool:** Claude Code
+**Prompt:**
+
+> Create backend/orchestrator.py implementing a supervisor + worker multi-agent pattern, building on agent.py. Requirements: (1) A supervisor agent that routes user requests to the right worker. (2) At least 2 workers: research_worker (web_search via Tavily) and todo_worker (db_create_todo + db_list_todos via SQLAlchemy directly). (3) A tracing layer that logs every tool call across the whole agent graph with timestamp and agent name. (4) A demo sending 2 requests (one routed to research_worker, one to todo_worker) and printing the full trace. (5) Clear comments explaining supervisor/worker vs single agent in agent.py.
+
+**Result:** Created orchestrator.py with: shared TRACE list + trace()/print_trace() helpers; make_tool_hook(agent_name) factory (extends agent.py's @log_tool_call with agent attribution); call_claude() and parse_tool_call() reused from agent.py; generic run_worker_loop() used by both workers; research_worker with web_search; todo_worker with db_create_todo + db_list_todos; supervisor_route() calling Claude with a routing-only system prompt; orchestrate() entry point that clears trace, calls supervisor, delegates to worker, prints trace.
+**Kept in repo at:** backend/orchestrator.py
+
+---
